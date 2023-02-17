@@ -1,0 +1,157 @@
+@startuml
+!pragma layout smetana
+
+package provider {
+  interface Provider {
+      send<R>(request: Request<R>): Promise<Response<R>>
+  }
+
+  class HttpProvider implements Provider {
+    -host: string
+    -options?: Omit<RequestInit, "body" | "headers">
+
+    +constructor(host: string, options?: RequestInit)
+    +send<R>(request: Request<R>): Promise<Response<R>>
+  }
+
+  class ProviderManager {
+    -httpProviders: HttpProvider[]
+    -enableGRPC: boolean
+    -gasPrice?: number
+
+    +constructor(options?: ProviderManagerOptions)
+    +{static} emptyManager(): ProviderManager
+    +{static} createManager(...providers: Provider[]): Promise<ProviderManager>
+    +init(): Promise<ProviderManager>
+    +send<R>(request: Request<R>, ...nodeIds: number[]): Promise<Response<R>>
+    -filterProviders(providers: Provider[], nodeIds: number[]): Provider[]
+  }
+}
+
+
+package request {
+  interface Response<R> {
+    jsonrpc: string
+    id: string
+    code: number
+    message: string
+    namespace: string
+    result: R
+  }
+
+  class Request<R> {
+    -providerManager: ProviderManager
+    -nodeIds: number[]
+    -headers: Record<string, string>
+    -id: number
+    -jsonrpc: string
+    -namespace: string
+    -method: string
+    -params: PlainObject[]
+
+    +constructor(method: string, provider: ProviderManager, ...nodeIds: number[])
+    +send(): Promise<Response<R>>
+    +addHeader(key: string, value: string): void
+    +addParam(obj: PlainObject): void
+    +body(): RequestBody
+  }
+}
+
+package service {
+  class ServiceManager {
+    +{static} getTxService(providerManager: ProviderManager): TxService
+  }
+  class SqlService
+  class DidService
+  class ContractService
+  class TxService {
+    -providerManager: ProviderManager
+
+    +constructor(providerManager: ProviderManager)
+    +getGasPrice(...nodeIds: number[]): Request<GasPriceResponse>
+  }
+  class AccountService
+  class BlockService
+  class NodeService
+}
+
+package account {
+  abstract class Account {
+    #address: string
+    #publicKey: string
+    #privateKey: string
+    #version: Version
+    #algo: Algo
+
+    +constructor(address: string, publicKey: string, privateKey: string, version: Version, algo: Algo)
+    +{abstract} sign(sourceData: string): string
+    +{abstract} verify(sourceData: string, signature: string): boolean
+  }
+  class SMAccount extends Account {}
+  class R1Account extends Account {}
+  class PKIAccount extends Account {}
+}
+
+package transaction {
+  class Transaction {
+    -account?: Account
+    -from?: string
+    -to?: string
+    -payload?: string
+    -value?: number
+    -simulate?: boolean
+    -vmType?: VmType
+    -opCode?: number
+    -extra?: string
+    -timestamp?: number
+    -nonce?: number
+    -extraIdLong?: number[]
+    -extraIdString?: string[]
+    -signature?: string
+    -needHashString?: string
+    -contractName?: string
+    -txVersion: TxVersion
+    -gasPrice: number
+    -gasLimit: number = Transaction.DEFAULT_GAS_LIMIT
+    -expirationTimestamp?: number
+
+    +sign(account: Account): void
+    +setNeedHashString(): void
+  }
+
+  class TxVersion {
+    -strVersion: string
+
+    +constructor(sv: string)
+  }
+
+  enum VmType {}
+}
+
+
+
+' Transaction 相关
+Transaction --o TxVersion
+Transaction --o VmType
+AccountService ..> Account
+
+' Provider & Request & Response 相关
+Request --> Response
+ProviderManager --* Request
+HttpProvider "n" --o "1" ProviderManager
+
+' Service 相关
+ServiceManager ..> TxService
+ServiceManager ..> ContractService
+ServiceManager ..> SqlService
+ServiceManager ..> DidService
+ServiceManager ..> BlockService
+ServiceManager ..> NodeService
+ServiceManager ..> AccountService
+
+service ..> Request
+
+ContractService ..> Transaction
+SqlService ..> Transaction
+
+@enduml

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.example</groupId>
+    <artifactId>auction</artifactId>
+    <version>1.0</version>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>auction</classifier>
+                            <!-- 用于配置合约打包的java文件的包路径，应将合约执行过程中用到的类文件都打包进去 -->
+                            <includes>
+                                <include>**/logic/**</include>
+                                <include>**/bean/**</include>
+                            </includes>
+                            <archive>
+                                <!-- 用于配置合约主类，必须提供合约主类全类名 -->
+                                <manifestEntries>
+                                    <Main-Class>logic.Auction</Main-Class>
+                                </manifestEntries>
+                            </archive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+          <!-- abi-->
+            <plugin>
+                <groupId>cn.hyperchain.hvm</groupId>
+                <artifactId>hvm-maven-plugin</artifactId>
+                <version>0.0.4</version>
+                <configuration>
+                    <jarFile>${project.basedir}/target/auction-1.0-auction.jar</jarFile>
+                    <invokeBeanPath>${project.basedir}/target/classes</invokeBeanPath>
+                    <invokeBeanPackages>
+                        <param>invoke.InvokeBid</param>
+                    </invokeBeanPackages>
+                    <outputFile>${project.basedir}/target/hvm.abi</outputFile>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>cn.hyperchain</groupId>
+            <artifactId>litesdk</artifactId>
+            <version>1.0.8</version>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>nexus</id>
+            <name>nexus</name>
+            <url>http://nexus.hyperchain.cn/repository/hyperchain/</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>nexus</id>
+            <name>Nexus</name>
+            <url> http://nexus.hyperchain.cn/repository/hyperchain/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+</project>
