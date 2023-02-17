@@ -1,0 +1,119 @@
+@startuml
+!pragma layout smetana
+'部署 HVM 流程
+autonumber
+actor developer
+
+group 新建 ProviderManager
+developer -> HttpProvider: 传递 host、options
+activate developer
+activate HttpProvider
+HttpProvider --> developer: 返回新建的 HttpProvider 对象
+deactivate HttpProvider
+deactivate developer
+
+developer -> ProviderManager: 调用 createManager
+activate ProviderManager
+activate developer
+ProviderManager --> developer: 返回新建的 ProviderManager 对象
+deactivate ProviderManager
+deactivate developer
+end
+
+group 新建 Transaction
+developer -> developer: 获取本地 jar 文件
+
+developer -> Transaction: 传递 jar 文件二进制流
+activate developer
+activate Transaction
+Transaction -> developer: 返回新建的 Transaction 对象
+deactivate Transaction
+deactivate developer
+end
+
+group 新建 Account
+developer -> ServiceManager: 调用 getAccountService
+activate ServiceManager
+activate developer
+ServiceManager --> developer: 返回 AccountService 对象
+deactivate ServiceManager
+deactivate developer
+
+developer -> AccountService: 调用 genAccount
+activate AccountService
+activate developer
+AccountService -> AccountService: 生成 keypair、address
+AccountService -> Account: 传递 address、keypair、version、algo
+activate Account
+Account --> AccountService: 返回新建的 Account 对象
+deactivate Account
+AccountService --> developer: 返回对应类型的 Account
+deactivate AccountService
+deactivate developer
+end
+
+group 交易签名
+developer -> Transaction: 调用 sign 方法，进行签名
+activate developer
+activate Transaction
+Transaction -> Transaction: 生成 needHashString
+Transaction -> Account: 调用 sign 方法，传递 needHashString
+activate Account
+Account --> Transaction: 返回签名结果
+deactivate Transaction
+deactivate Account
+deactivate developer
+end
+
+group 发送交易
+developer -> ServiceManager: 调用 getContractService，传递 ProviderManager 对象
+activate developer
+activate ServiceManager
+ServiceManager --> developer: 返回 ContractService 对象
+deactivate ServiceManager
+deactivate developer
+
+' 调用 ContractService 的方法，拿到 Request
+developer -> ContractService: 调用 deploy 方法，传递签名后的 transaction
+activate developer
+activate ContractService
+ContractService -> ContractService: 拼接 Params
+ContractService -> Request: 传递 method、params、providerManager
+activate Request
+Request --> ContractService: 返回新建的 Request
+deactivate Request
+ContractService --> developer: 返回 Request 对象
+deactivate ContractService
+deactivate developer
+
+' 调用 Request.send
+developer -> Request: 调用 send 方法
+activate developer
+activate Request
+
+group 网络请求
+Request -> ProviderManager: 调用 send 方法
+activate ProviderManager
+ProviderManager -> ProviderManager: 选择其中一个正常的 HttpProvider
+ProviderManager -> HttpProvider: 调用 send 方法，传递 Request
+activate HttpProvider
+HttpProvider -> Request: 调用 body 方法
+Request --> HttpProvider: 返回“请求体”
+HttpProvider -> Request: 调用 getHeaders 方法
+Request --> HttpProvider: 返回“请求头”
+HttpProvider -> HttpProvider: 整合请求参数
+HttpProvider -> Hyperchain平台: 调用网络请求
+activate Hyperchain平台
+Hyperchain平台 --> HttpProvider: 返回部署结果
+deactivate Hyperchain平台
+HttpProvider --> ProviderManager: 返回部署结果
+deactivate HttpProvider
+ProviderManager --> Request: 返回部署结果
+deactivate ProviderManager
+end
+
+Request --> developer: 返回部署结果
+deactivate Request
+deactivate developer
+end
+@enduml

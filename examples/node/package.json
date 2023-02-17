@@ -1,0 +1,16 @@
+{
+  "name": "node-hvm-deploy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "add:dep": "sh ./scripts/add-dep.sh",
+    "start": "node ./index.js"
+  },
+  "keywords": [],
+  "author": "Qingbo Yu",
+  "license": "ISC",
+  "dependencies": {
+    "@hyperchain/jssdk": "file:.yalc/@hyperchain/jssdk"
+  }
+}
