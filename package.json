@@ -1,6 +1,6 @@
 {
   "name": "@hyperchain/jssdk",
-  "version": "1.0.1",
+  "version": "0.1.0",
   "description": "js-sdk for hyperchain",
   "main": "./dist/index.js",
   "browser": {
@@ -20,9 +20,10 @@
     "docker:run:nodesolo": "sh scripts/docker-run-nodesolo.sh",
     "build:protos:node": "sh scripts/build-protos-node.sh",
     "build:protos:browser": "sh scripts/build-protos-browser.sh",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "commit": "cz"
   },
-  "author": "Kiyonami Yu",
+  "author": "kiyonamiy",
   "license": "Apache-2.0",
   "devDependencies": {
     "@types/elliptic": "^6.4.14",

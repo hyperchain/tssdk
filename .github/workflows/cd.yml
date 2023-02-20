@@ -1,0 +1,38 @@
+name: Publish Package to npmjs
+on:
+  release:
+    types: [published]
+jobs:
+  build-and-publish:
+    # modify the default permissions granted to the GITHUB_TOKEN
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      # Setup .npmrc file to publish to npm
+      - uses: actions/setup-node@v3
+        with:
+          always-auth: true
+          node-version: "16.x"
+          registry-url: "https://registry.npmjs.org"
+      # upgrade npm version in package.json to the tag used in the release.
+      - run: npm config set git-tag-version=false
+      - run: npm version ${{ github.event.release.tag_name }}
+      - run: npm ci
+      - run: npm run build
+      - name: NPM Publish
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          access: public
+      # set up git since we will later push to the repo
+      - name: Commit Files
+        run: |
+          npm run prepare
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -a -m "chore(package.json): update version" --no-verify
+      - name: Push Changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
