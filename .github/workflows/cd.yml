@@ -23,7 +23,7 @@ jobs:
       - name: NPM Publish
         uses: JS-DevTools/npm-publish@v1
         with:
-          token: ${{ secrets.NPM_TOKEN }}
+          token: ${{ secrets.NPM_HYPERCHAIN_TSSDK }}
           access: public
       # set up git since we will later push to the repo
       - name: Commit Files
