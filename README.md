@@ -18,7 +18,7 @@
 
 ## Architecture
 
-![jssdk-class](./docs/img/jssdk-class.png)
+![jssdk-class](https://raw.githubusercontent.com/kiyonamiy/hyperchain-jssdk/main/docs/img/jssdk-class.png)
 
 `@hyperchain/jssdk` 主要分为两个大模块——网络通信模块（如上图的左侧）、服务提供模块（如上图的右侧）。
 

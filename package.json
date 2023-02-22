@@ -7,8 +7,7 @@
     "./dist/index.js": "./dist/index.browser.js"
   },
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "typings": "./dist/index.d.ts",
   "scripts": {
