@@ -7,3 +7,4 @@ export { default as NodeService } from "./node-service";
 export { default as SqlService } from "./sql-service";
 export { default as TxService } from "./tx-service";
 export { default as VersionService } from "./version-service";
+export { default as ConfigService } from "./config-service";

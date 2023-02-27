@@ -8,13 +8,22 @@ public class MainContract extends BaseContract {
     private static Logger logger = Logger.getLogger(MainContract.class);
 
     @StoreField
-    int x = 5555;
+    int number = 5;
+
+    // gasUsed: 41746 // gasUsed: 71763
+    public int addView() {
+      int new_number = 0;
+      for (int i = 0; i < 1000; i ++) {
+        new_number += number;
+      }
+      return new_number;
+    }
 
     public int getX(int xTmp) {
         return xTmp;
     }
 
     public int getX() {
-        return x;
+        return number;
     }
 }

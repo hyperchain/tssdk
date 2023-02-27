@@ -81,7 +81,7 @@ export function invokeBtnOnClickInit() {
     hvmAbiButton.onclick = function () {
       const file: File | null | undefined = (hvmAbiFileElement as HTMLInputElement).files?.item(0);
       if (file == null) {
-        alert("please select a contract file first!");
+        alert("please select an abi file first!");
         return;
       }
       file.arrayBuffer().then((buffer: ArrayBuffer) => {

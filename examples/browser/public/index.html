@@ -3,10 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="hyperchain"
-    />
+    <meta name="description" content="hyperchain" />
     <title>hyperchain</title>
   </head>
   <body>
@@ -22,22 +19,15 @@
         </div>
         <div>
           <h3>abi 方法调用</h3>
+          <div><label>合约地址</label><input id="contract-address" /></div>
+          <div><label>abi文件</label><input id="abi-file" type="file" /></div>
           <div>
-            <label>合约地址</label><input id="contract-address"/>
+            <label>BeanType(MethodBean|InvokeBean)</label
+            ><input id="bean-type" />
           </div>
-          <div>
-            <label>abi文件</label><input id="abi-file" type="file" />
-          </div>
-          <div>
-            <label>BeanType(MethodBean|InvokeBean)</label><input id="bean-type" />
-          </div>
-          <div>
-            <label>BeanName</label><input id="bean-name" />
-          </div>
-          <div>
-            <label>参数（空格分隔）</label><input id="args" />
-          </div>
-            <button id="hvm-abi-button">调用</button>
+          <div><label>BeanName</label><input id="bean-name" /></div>
+          <div><label>参数（空格分隔）</label><input id="args" /></div>
+          <button id="hvm-abi-button">调用</button>
         </div>
       </div>
       <br />
@@ -47,9 +37,19 @@
     </div>
     <div>
       <h2>evm</h2>
-      <input id="evm-bin" type="file" />
-      <input id="evm-abi" type="file" />
-      <button id="evm-button">EVM 部署</button>
+      <div>
+        <h3>部署</h3>
+        <input id="evm-bin" type="file" />
+        <button id="evm-deploy-button">evm 部署</button>
+      </div>
+      <div>
+        <h3>abi 方法调用</h3>
+        <div><label>合约地址</label><input id="evm-contract-address" /></div>
+        <div><label>abi文件</label><input id="evm-abi-file" type="file" /></div>
+        <div><label>Method Name</label><input id="evm-method-name" /></div>
+        <div><label>参数（空格分隔）</label><input id="evm-params" /></div>
+        <button id="evm-invoke-button">调用</button>
+      </div>
     </div>
   </body>
 </html>
