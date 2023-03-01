@@ -13,8 +13,8 @@ interface Arg {
 export default class InvokeParams {
   private params?: string;
 
-  public static HvmAbiParamsBuilder: typeof HvmAbiParamsBuilder;
-  public static HvmDirectParamsBuilder: typeof HvmDirectParamsBuilder;
+  public static HvmAbiBuilder: typeof HvmAbiBuilder;
+  public static HvmTypeBuilder: typeof HvmTypeBuilder;
 
   public getParams(): string | undefined {
     return this.params;
@@ -25,7 +25,7 @@ export default class InvokeParams {
   }
 }
 
-class HvmAbiParamsBuilder {
+class HvmAbiBuilder {
   private invokeParams: InvokeParams;
   private bean: Bean; // 单个调用
   private args: unknown[]; // 实际参数
@@ -89,7 +89,7 @@ class HvmAbiParamsBuilder {
     );
   }
 
-  public addParam(value: unknown): HvmAbiParamsBuilder {
+  public addParam(value: unknown): HvmAbiBuilder {
     this.args.push(value);
     return this;
   }
@@ -112,7 +112,12 @@ class HvmAbiParamsBuilder {
           }, but get ${typeof arg}`
         );
       }
-      argMap[requiredDataDesc.name] = {
+      // 如果是 InvokeBean，mapKey 不会重复；如果是 MethodBean，mapKey 可能存在重复（buildMethodBeanPayload 不需要使用到 key 值，所以保证不重复即可）；
+      const mapKey =
+        this.bean.beanType === BeanType.InvokeBean
+          ? requiredDataDesc.name
+          : `${requiredDataDesc.name}#${i}`;
+      argMap[mapKey] = {
         structName: requiredDataDesc.structName,
         value: arg,
       };
@@ -186,7 +191,7 @@ class HvmAbiParamsBuilder {
   }
 }
 
-class HvmDirectParamsBuilder {
+class HvmTypeBuilder {
   private invokeParams: InvokeParams;
   private payload: Uint8Array;
 
@@ -198,111 +203,111 @@ class HvmDirectParamsBuilder {
     this.payload = ByteUtil.concat(methodNameBytesLen, methodNameBytes);
   }
 
-  public addBytePrimitive(n: number): HvmDirectParamsBuilder {
+  public addBytePrimitive(n: number): HvmTypeBuilder {
     if (!checkType(n, DataType.Byte)) {
       throw new ArgError(`${n} is not a byte!`);
     }
     return this.addObject("byte", n);
   }
 
-  public addByte(n: number): HvmDirectParamsBuilder {
+  public addByte(n: number): HvmTypeBuilder {
     if (!checkType(n, DataType.Byte)) {
       throw new ArgError(`${n} is not a java.lang.Byte!`);
     }
     return this.addObject("java.lang.Byte", n);
   }
 
-  public addShortPrimitive(n: number): HvmDirectParamsBuilder {
+  public addShortPrimitive(n: number): HvmTypeBuilder {
     if (!checkType(n, DataType.Short)) {
       throw new ArgError(`${n} is not a short!`);
     }
     return this.addObject("short", n);
   }
 
-  public addShort(n: number): HvmDirectParamsBuilder {
+  public addShort(n: number): HvmTypeBuilder {
     if (!checkType(n, DataType.Short)) {
       throw new ArgError(`${n} is not a java.lang.Short!`);
     }
     return this.addObject("java.lang.Short", n);
   }
 
-  public addIntPrimitive(n: number): HvmDirectParamsBuilder {
+  public addIntPrimitive(n: number): HvmTypeBuilder {
     if (!checkType(n, DataType.Int)) {
       throw new ArgError(`${n} is not an int!`);
     }
     return this.addObject("int", n);
   }
 
-  public addInteger(n: number): HvmDirectParamsBuilder {
+  public addInteger(n: number): HvmTypeBuilder {
     if (!checkType(n, DataType.Int)) {
       throw new ArgError(`${n} is not a java.lang.Integer!`);
     }
     return this.addObject("java.lang.Integer", n);
   }
 
-  public addLongPrimitive(n: number): HvmDirectParamsBuilder {
+  public addLongPrimitive(n: number): HvmTypeBuilder {
     if (!checkType(n, DataType.Long)) {
       throw new ArgError(`${n} is not a long!`);
     }
     return this.addObject("long", n);
   }
 
-  public addLong(n: number): HvmDirectParamsBuilder {
+  public addLong(n: number): HvmTypeBuilder {
     if (!checkType(n, DataType.Long)) {
       throw new ArgError(`${n} is not an java.lang.Long!`);
     }
     return this.addObject("java.lang.Long", n);
   }
 
-  public addFloatPrimitive(n: number): HvmDirectParamsBuilder {
+  public addFloatPrimitive(n: number): HvmTypeBuilder {
     if (!checkType(n, DataType.Float)) {
       throw new ArgError(`${n} is not a float!`);
     }
     return this.addObject("float", n);
   }
 
-  public addFloat(n: number): HvmDirectParamsBuilder {
+  public addFloat(n: number): HvmTypeBuilder {
     if (!checkType(n, DataType.Float)) {
       throw new ArgError(`${n} is not a java.lang.Float!`);
     }
     return this.addObject("java.lang.Float", n);
   }
 
-  public addDoublePrimitive(n: number): HvmDirectParamsBuilder {
+  public addDoublePrimitive(n: number): HvmTypeBuilder {
     if (!checkType(n, DataType.Double)) {
       throw new ArgError(`${n} is not a double!`);
     }
     return this.addObject("double", n);
   }
 
-  public addDouble(n: number): HvmDirectParamsBuilder {
+  public addDouble(n: number): HvmTypeBuilder {
     if (!checkType(n, DataType.Double)) {
       throw new ArgError(`${n} is not a java.lang.Double!`);
     }
     return this.addObject("java.lang.Double", n);
   }
 
-  public addBooleanPrimitive(b: boolean): HvmDirectParamsBuilder {
+  public addBooleanPrimitive(b: boolean): HvmTypeBuilder {
     return this.addObject("boolean", b);
   }
 
-  public addBoolean(b: boolean): HvmDirectParamsBuilder {
+  public addBoolean(b: boolean): HvmTypeBuilder {
     return this.addObject("java.lang.Boolean", b);
   }
 
-  public addCharPrimitive(c: string): HvmDirectParamsBuilder {
+  public addCharPrimitive(c: string): HvmTypeBuilder {
     return this.addObject("char", c);
   }
 
-  public addChar(c: string): HvmDirectParamsBuilder {
+  public addChar(c: string): HvmTypeBuilder {
     return this.addObject("java.lang.Character", c);
   }
 
-  public addString(str: string): HvmDirectParamsBuilder {
+  public addString(str: string): HvmTypeBuilder {
     return this.addObject("java.lang.String", str);
   }
 
-  public addObject(className: string, obj: any): HvmDirectParamsBuilder {
+  public addObject(className: string, obj: any): HvmTypeBuilder {
     const paramBytes = this.paramToBytes(className, obj);
     this.payload = ByteUtil.concat(this.payload, paramBytes);
     return this;
@@ -325,8 +330,8 @@ class HvmDirectParamsBuilder {
   }
 }
 
-InvokeParams.HvmAbiParamsBuilder = HvmAbiParamsBuilder;
-InvokeParams.HvmDirectParamsBuilder = HvmDirectParamsBuilder;
+InvokeParams.HvmAbiBuilder = HvmAbiBuilder;
+InvokeParams.HvmTypeBuilder = HvmTypeBuilder;
 
 /**
  * @param value

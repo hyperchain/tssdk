@@ -1,6 +1,6 @@
 {
   "name": "@hyperchain/jssdk",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "js-sdk for hyperchain",
   "main": "./dist/index.js",
   "browser": {
@@ -20,6 +20,7 @@
     "build:protos:node": "sh scripts/build-protos-node.sh",
     "build:protos:browser": "sh scripts/build-protos-browser.sh",
     "prepare": "husky install",
+    "lint": "npx eslint --ext .js,.jsx,.ts,.tsx,.html  src/",
     "commit": "cz"
   },
   "author": "kiyonamiy",

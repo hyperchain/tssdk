@@ -202,14 +202,14 @@ public invoke(
 参数说明：
 
 - contractAddress：合约地址；
-- invokeParams：调用参数，可以通过 `HvmDirectParamsBuilder` 或者 `HvmAbiParamsBuilder` 来创建；
+- invokeParams：调用参数，可以通过 `HvmTypeBuilder` 或者 `HvmAbiBuilder` 来创建；
 - isDid：contractAddress 是否是 DID；
 - chainId：如果是 DID，则 chainId 必须设置；
 
 示例如下：
 
 ```typescript
-const params = new InvokeParams.HvmDirectParamsBuilder("setHash");
+const params = new InvokeParams.HvmTypeBuilder("setHash");
 params.addString("test").addObject("java.lang.Object", {
   a: 1,
   b: 2

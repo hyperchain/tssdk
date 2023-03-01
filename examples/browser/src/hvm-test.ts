@@ -124,7 +124,7 @@ async function invoke(
   const accountService = ServiceManager.getAccountService(providerManager);
   const account = accountService.fromAccountJson(accountJson);
   // 3. 创建交易体
-  const params = new InvokeParams.HvmAbiParamsBuilder(file, beanType as any, beanName);
+  const params = new InvokeParams.HvmAbiBuilder(file, beanType as any, beanName);
   if (args !== "") {
     args.split(argsSeparator).forEach((argStr) => {
       params.addParam(argStr);

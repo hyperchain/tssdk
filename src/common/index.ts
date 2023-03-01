@@ -2,7 +2,7 @@
 export * as BvmOperation from "./bvm-operation";
 
 // ---------------- HVM -------------------------
-export { default as InvokeParams } from "./hvm-invoke-params";
+export { default as InvokeParams } from "./invoke-params";
 
 // ---------------- util -------------------------
 export * from "./util/index";

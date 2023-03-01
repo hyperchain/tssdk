@@ -26,4 +26,8 @@ public class MainContract extends BaseContract {
     public int getX() {
         return number;
     }
+
+    public int sum(int a, int b, int c) {
+      return a + b + c;
+    }
 }
