@@ -112,7 +112,12 @@ class HvmAbiParamsBuilder {
           }, but get ${typeof arg}`
         );
       }
-      argMap[requiredDataDesc.name] = {
+      // 如果是 InvokeBean，mapKey 不会重复；如果是 MethodBean，mapKey 可能存在重复（buildMethodBeanPayload 不需要使用到 key 值，所以保证不重复即可）；
+      const mapKey =
+        this.bean.beanType === BeanType.InvokeBean
+          ? requiredDataDesc.name
+          : `${requiredDataDesc.name}#${i}`;
+      argMap[mapKey] = {
         structName: requiredDataDesc.structName,
         value: arg,
       };
