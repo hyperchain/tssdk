@@ -10,6 +10,7 @@ import {
   InvokeParams,
   StringUtil,
   HvmType,
+  HvmType,
 } from "../../src";
 import { BeanType } from "../../src/common/type/vm/hvm";
 
