@@ -21,7 +21,7 @@ export * as CertUtil from "./util/cert";
 export * as HashUtil from "./util/hash";
 
 // ---------------- logger -------------------------
-export { default as logger } from "./logger";
+export { resetLogger, newLogger, logger as logger } from "./logger";
 
 // ---------------- constant ---------------------
 export * as Constant from "./constant";
