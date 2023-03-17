@@ -1,6 +1,8 @@
 import fs from "fs";
 import path from "path";
+import shelljs from "shelljs";
 import { HttpProvider, ProviderManager, logger, resetLogger } from "../../src";
+import { DailyRotateFileTransport } from "../../src/common/logger";
 
 async function getNumAfter(ms: number): Promise<number> {
   return new Promise<void>((resolve) =>
@@ -21,9 +23,25 @@ let x = 0;
 
 jest.setTimeout(15000);
 
-// logger.level = "debug";
+describe("DailyRotateFileTransport", () => {
+  beforeAll(() => {
+    if (fs.existsSync(todayLogPath)) {
+      fs.rmSync(todayLogPath, {
+        recursive: true,
+        force: true,
+      });
+    }
+    console.log("beforeAll: 日志清理完毕");
+    resetLogger();
+  });
 
-describe("jest 执行顺序测试", () => {
+  test("异步的测试输出 after 1.5s", async () => {
+    const num = await getNumAfter(1500);
+    logger.info("异步输出的日志 after 1.5s");
+    x += num;
+    expect(x).toBe(1);
+  });
+
   it("新建 ProviderManager 1", async () => {
     try {
       const httpProvider1 = new HttpProvider(1, "localhost:8081");
@@ -35,66 +53,32 @@ describe("jest 执行顺序测试", () => {
     }
   });
 
-  it("异步的测试输出 after 1.5s", async () => {
-    const result = await getNumAfter(1500);
-    logger.info("test 1: 异步输出的日志 after 1.5s");
-    x = x + result;
-    expect(x).toBe(1);
+  test("同步的测试输出", async () => {
+    logger.info("同步输出的日志");
   });
 
-  it("新建 ProviderManager 2", async () => {
-    try {
-      const httpProvider1 = new HttpProvider(1, "localhost:8081");
-      const providerManager = await ProviderManager.createManager({
-        httpProviders: [httpProvider1],
-      });
-    } catch (e: any) {
-      logger.error(`providerManager 2 初始化失败: ${e.message}`);
-    }
-  });
-
-  it("同步的输出", () => {
-    logger.info("test 2: 同步输出的日志");
-    x = x + 1;
+  test("异步的测试输出 after 0.5s", async () => {
+    const num = await getNumAfter(500);
+    logger.info("异步输出的日志 after 0.5s");
+    x += num;
     expect(x).toBe(2);
   });
 
-  it("异步的测试输出 after 0.5s", async () => {
-    const result = await getNumAfter(500);
-    logger.info("test 3: 异步输出的日志 after 0.5s");
-    x = x + result;
-    expect(x).toBe(3);
-  });
-});
-
-afterEach(async () => {
-  await new Promise<void>((resolve, reject) => {
-    logger.on("finish", () => {
-      setTimeout(() => {
-        resolve();
+  afterEach(async () => {
+    await new Promise<void>((resolve, reject) => {
+      logger.transports.forEach((t) => {
+        t.on(DailyRotateFileTransport.LOG_END_EVENT, () => {
+          resolve();
+        });
       });
+      logger.end();
     });
-    logger.end();
+    resetLogger();
+    // htmlConvert(todayLogPath);
   });
-
-  resetLogger();
-  // logger.level = "debug";
-
-  console.log("afterEach: ======> 读取日志文件");
-  const buffer = fs.readFileSync(todayLogPath);
-  console.log(buffer.toString());
-  console.log("afterEach: ======> 收集日志结束");
-  console.log(
-    "=================================================================================================================="
-  );
 });
 
-afterAll(() => {
-  if (fs.existsSync(logsDir)) {
-    fs.rmSync(logsDir, {
-      recursive: true,
-      force: true,
-    });
-  }
-  console.log(`afterAll: 已清空 ${logsDir}`);
-});
+function htmlConvert(filePath: string) {
+  const logPyToolPath = path.resolve(__dirname, "../resource/py/tool.py");
+  const ret = shelljs.exec(`python3 ${logPyToolPath} -f ${filePath}`);
+}

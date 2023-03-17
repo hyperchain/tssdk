@@ -1,7 +1,8 @@
 import { createLogger, format, Logger, LoggerOptions, transports } from "winston";
-import "winston-daily-rotate-file";
+import path from "path";
 import { JSONBigintUtil } from "..";
 import { isInNode } from "../util/env";
+import DailyRotateFileTransport from "./daily-rotate-transport";
 
 // 新建 logger（默认配置）
 function newLogger(options?: LoggerOptions): Logger {
@@ -28,18 +29,20 @@ function newLogger(options?: LoggerOptions): Logger {
 
   // DailyRotateFile is only supported for node
   if (isInNode()) {
-    const auditFileName = "./logs/hash-audit.json";
-    const transport = new transports.DailyRotateFile({
-      auditFile: auditFileName.toString(),
-      filename: "./logs/%DATE%.log",
-      datePattern: "YYYY-MM-DD",
-      maxSize: "20m",
-      maxFiles: "14d",
-    });
-    logger.add(transport);
-    logger.defaultMeta = {
-      nodeAuditFile: auditFileName.toString(),
-    };
+    const logDirAbsPath = path.resolve(__dirname, `${process.cwd()}/logs`); //在当前运行的目录下新建 logs 文件夹
+    logger.add(new DailyRotateFileTransport(logDirAbsPath));
+    // const auditFileName = "./logs/hash-audit.json";
+    // const transport = new transports.DailyRotateFile({
+    //   auditFile: auditFileName.toString(),
+    //   filename: "./logs/old/%DATE%.log",
+    //   datePattern: "YYYY-MM-DD",
+    //   maxSize: "20m",
+    //   maxFiles: "14d",
+    // });
+    // logger.add(transport);
+    // logger.defaultMeta = {
+    //   nodeAuditFile: auditFileName.toString(),
+    // };
   }
 
   // If we're not in production then **ALSO** log to the `console` with the colorized simple format.
@@ -57,4 +60,4 @@ function resetLogger(options?: LoggerOptions) {
   return logger;
 }
 
-export { logger, resetLogger, newLogger };
+export { logger, resetLogger, newLogger, DailyRotateFileTransport };
