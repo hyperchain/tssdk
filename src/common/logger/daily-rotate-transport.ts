@@ -1,5 +1,6 @@
 import TransportStream from "winston-transport";
 import fs from "fs";
+import * as JSONBigintUtil from "../util/json-bigint";
 
 interface LogInfo {
   message: string;
@@ -30,7 +31,11 @@ export default class DailyRotateFileTransport extends TransportStream {
       this.fileWiteStream.end();
       this.fileWiteStream = this.createWriteStream();
     }
-    this.fileWiteStream.write(`[${info.level}][${info.timestamp}]: ${info.message}\n`);
+    this.fileWiteStream.write(
+      `[${info.level}][${info.timestamp}]: ${
+        typeof info.message === "string" ? info.message : JSONBigintUtil.stringify(info.message)
+      }\n`
+    );
     next();
   }
 

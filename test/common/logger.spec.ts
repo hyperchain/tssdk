@@ -78,6 +78,15 @@ describe("DailyRotateFileTransport", () => {
   });
 });
 
+describe("normal test case", () => {
+  test("print an object", () => {
+    logger.info("hello world");
+    logger.info([]);
+    logger.info({ x: 1, y: 2 });
+    logger.info([{ x: 1, y: 2 }]);
+  });
+});
+
 function htmlConvert(filePath: string) {
   const logPyToolPath = path.resolve(__dirname, "../resource/py/tool.py");
   const ret = shelljs.exec(`python3 ${logPyToolPath} -f ${filePath}`);
