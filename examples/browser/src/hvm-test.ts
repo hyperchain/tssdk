@@ -81,7 +81,7 @@ export function invokeBtnOnClickInit() {
     hvmAbiButton.onclick = function () {
       const file: File | null | undefined = (hvmAbiFileElement as HTMLInputElement).files?.item(0);
       if (file == null) {
-        alert("please select a contract file first!");
+        alert("please select an abi file first!");
         return;
       }
       file.arrayBuffer().then((buffer: ArrayBuffer) => {
@@ -124,7 +124,7 @@ async function invoke(
   const accountService = ServiceManager.getAccountService(providerManager);
   const account = accountService.fromAccountJson(accountJson);
   // 3. 创建交易体
-  const params = new InvokeParams.HvmAbiParamsBuilder(file, beanType as any, beanName);
+  const params = new InvokeParams.HvmAbiBuilder(file, beanType as any, beanName);
   if (args !== "") {
     args.split(argsSeparator).forEach((argStr) => {
       params.addParam(argStr);

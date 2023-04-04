@@ -2,7 +2,7 @@
 export * as BvmOperation from "./bvm-operation";
 
 // ---------------- HVM -------------------------
-export { default as InvokeParams } from "./hvm-invoke-params";
+export { default as InvokeParams } from "./invoke-params";
 
 // ---------------- util -------------------------
 export * from "./util/index";
@@ -21,7 +21,7 @@ export * as CertUtil from "./util/cert";
 export * as HashUtil from "./util/hash";
 
 // ---------------- logger -------------------------
-export { default as logger } from "./logger";
+export { resetLogger, newLogger, logger as logger, DailyRotateFileTransport } from "./logger";
 
 // ---------------- constant ---------------------
 export * as Constant from "./constant";

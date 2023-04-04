@@ -7,33 +7,54 @@ import {
   logger,
   JSONBigintUtil,
   Algo,
+  StringUtil,
 } from "@hyperchain/jssdk";
 
 const hosts = ["localhost:8081", "localhost:8082", "localhost:8083", "localhost:8084"];
 
 export function deployBtnOnClickInit() {
   const evmBinFileElement = document.getElementById("evm-bin");
-  const evmAbiFileElement = document.getElementById("evm-abi");
-  const evmButtonElement = document.getElementById("evm-button");
-  if (evmBinFileElement != null && evmAbiFileElement != null && evmButtonElement != null) {
-    evmButtonElement.onclick = function () {
+  const evmDeployButtonElement = document.getElementById("evm-deploy-button");
+  if (evmBinFileElement != null && evmDeployButtonElement != null) {
+    evmDeployButtonElement.onclick = function () {
       const binFile: File | null | undefined = (evmBinFileElement as HTMLInputElement).files?.item(
-        0
-      );
-      const abiFile: File | null | undefined = (evmAbiFileElement as HTMLInputElement).files?.item(
         0
       );
       if (binFile != null) {
         binFile.arrayBuffer().then((binBuff) => {
-          if (abiFile != null) {
-            return abiFile.arrayBuffer().then((abiBuff) => {
-              deploy(binBuff, abiBuff);
-            });
-          } else {
-            deploy(binBuff);
-          }
+          deploy(binBuff);
         });
       }
+    };
+  }
+}
+
+export function invokeBtnOnClickInit() {
+  const contractAddressElement = document.getElementById("evm-contract-address");
+  const abiFileElement = document.getElementById("evm-abi-file");
+  const methodNameElement = document.getElementById("evm-method-name");
+  const paramsElement = document.getElementById("evm-params");
+  const invokeBtnElement = document.getElementById("evm-invoke-button");
+  if (
+    contractAddressElement != null &&
+    abiFileElement != null &&
+    methodNameElement != null &&
+    paramsElement != null &&
+    invokeBtnElement != null
+  ) {
+    invokeBtnElement.onclick = function () {
+      const file: File | null | undefined = (abiFileElement as HTMLInputElement).files?.item(0);
+      if (file == null) {
+        alert("please select an abi file first!");
+        return;
+      }
+      file.arrayBuffer().then((buffer: ArrayBuffer) => {
+        invoke(
+          (contractAddressElement as HTMLInputElement).value,
+          buffer,
+          (methodNameElement as HTMLInputElement).value
+        );
+      });
     };
   }
 }
@@ -60,9 +81,7 @@ async function deploy(binFile: ArrayBuffer, abiFile?: ArrayBuffer) {
   const account = accountService.fromAccountJson(accountJson);
   // 3. 创建交易体
   const transaction = new Transaction.EVMBuilder(account.getAddress(), providerManager)
-    .deploy(binFile, abiFile!, [
-      "0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000003df32340000000000000000000000000000000000000000000000000000000000",
-    ])
+    .deploy(binFile)
     .build();
   // 4. 签名
   transaction.sign(account);
@@ -72,6 +91,36 @@ async function deploy(binFile: ArrayBuffer, abiFile?: ArrayBuffer) {
   const response = await deployRequest.send();
   const deployResult = await response.poll();
   console.log(deployResult);
+}
+
+async function invoke(contractAddress: string, abiFile: ArrayBuffer, methodName: string) {
+  const accountJson = JSON.stringify({
+    publicKey:
+      "045906bf3063dced2488e04cda8227321428b8ef22a07dbe026ed77cbd100594a2fcddd4fda5a98597dd61eb69fbd08ced97a4ef80159c900a5fb845478327aacf",
+    privateKey: "2806197d247c5208c49528b46fdfa31c7e1457109f4e984f89e01bb6ed18dc4f",
+    address: "6275b09dbb9d49252150e52647101665f8f60ca4",
+    algo: "0x13",
+    version: "4.0",
+  });
+  // 1. 新建 provider manager
+  const providerManager = await ProviderManager.createManager({
+    httpProviders: hosts.map((v, k) => new HttpProvider(k, v)),
+  });
+  // 2. 新建 account
+  const accountService = ServiceManager.getAccountService(providerManager);
+  const account = accountService.fromAccountJson(accountJson);
+  // 3. 创建交易体
+  const transaction = new Transaction.EVMBuilder(account.getAddress(), providerManager)
+    .invoke(contractAddress, methodName, abiFile, [])
+    .build();
+  // 4. 签名
+  transaction.sign(account);
+  // 5. 通过 contract service 部署
+  const contractService = ServiceManager.getContractService(providerManager);
+  const invokeRequest = contractService.invoke(transaction);
+  const response = await invokeRequest.send();
+  const invokeResult = await response.poll();
+  console.log("--------invokeResult", StringUtil.fromHex(invokeResult.result.ret));
 }
 
 export async function testIntAndUint() {

@@ -71,7 +71,7 @@
 
 ### Documentation
 
-You can find for more details, API, and other docs on [docs](https://docs.hyperchain.cn/docs/flato-solo/5.1-flato-sdk-litesdk).
+You can find for more details, API, and other docs on [docs](./docs/hyperchain_jssdk.md).
 
 ### Example
 

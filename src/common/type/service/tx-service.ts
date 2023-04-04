@@ -29,6 +29,7 @@ export interface Transaction {
   txIndex: string;
   from: string;
   to: string;
+  cName: string;
   amount: string;
   timestamp: string;
   nonce: string;

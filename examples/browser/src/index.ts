@@ -9,6 +9,7 @@ HvmTest.deployBtnOnClickInit();
 HvmTest.invokeBtnOnClickInit();
 
 EvmTest.deployBtnOnClickInit();
+EvmTest.invokeBtnOnClickInit();
 EvmTest.testIntAndUint();
 
 // BvmTest.testDidOperation();

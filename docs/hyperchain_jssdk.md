@@ -202,14 +202,14 @@ public invoke(
 参数说明：
 
 - contractAddress：合约地址；
-- invokeParams：调用参数，可以通过 `HvmDirectParamsBuilder` 或者 `HvmAbiParamsBuilder` 来创建；
+- invokeParams：调用参数，可以通过 `HvmTypeBuilder` 或者 `HvmAbiBuilder` 来创建；
 - isDid：contractAddress 是否是 DID；
 - chainId：如果是 DID，则 chainId 必须设置；
 
 示例如下：
 
 ```typescript
-const params = new InvokeParams.HvmDirectParamsBuilder("setHash");
+const params = new InvokeParams.HvmTypeBuilder("setHash");
 params.addString("test").addObject("java.lang.Object", {
   a: 1,
   b: 2
@@ -1748,3 +1748,105 @@ getHyperchainVersionFromBin(hyperchainVersion: string, ...nodeIds: number[]): Re
 从接收请求的节点查询指定 Hyperchain 版本支持的链级细分版本的最大版本号。
 
 _注意：该接口只是从接收请求的节点二进制里获取这些信息，并不是从账本中查询，结果取决于接收请求节点的二进制版本。_
+
+## 16 ConfigService
+
+### 16.1 getProposal：查询提案
+
+```
+getProposal(...nodeIds: number[]): Request<ConfigServiceType.Proposal>
+```
+
+参数说明：
+
+- nodeIds：请求向哪些节点发送；
+
+### 16.2 getConfig：查询配置
+
+```
+getConfig(...nodeIds: number[]): Request<string>
+```
+
+参数说明：
+
+- nodeIds：请求向哪些节点发送；
+
+### 16.3 getGenesisInfo
+
+```
+getGenesisInfo(...nodeIds: number[]): Request<string>
+```
+
+### 16.4 getHosts：查询连接的节点信息
+
+```
+getHosts(role: string, ...nodeIds: number[]): Request<Record<string, string>>
+```
+
+参数说明：
+
+- role：节点角色（目前只支持查询vp节点）；
+- nodeIds：请求向哪些节点发送；
+
+### 16.5 getVSet：查询参与共识的节点信息
+
+```
+getVSet(...nodeIds: number[]): Request<string>
+```
+
+参数说明：
+
+- nodeIds：请求向哪些节点发送；
+
+### 16.6 getAllRoles：查询所以角色信息
+
+```
+getAllRoles(...nodeIds: number[]): Request<Record<string, number>>
+```
+
+参数说明：
+
+- nodeIds：请求向哪些节点发送；
+
+### 16.7 isRoleExist：查询角色是否存在
+
+```
+isRoleExist(role: string, ...nodeIds: number[]): Request<boolean>
+```
+
+参数说明：
+
+- role：要查询的角色名称；
+- nodeIds：请求向哪些节点发送；
+
+### 16.8 getNameByAddress：根据合约地址查询合约命名
+
+```
+getNameByAddress(address: string, ...nodeIds: number[]): Request<string>
+```
+
+参数说明：
+
+- address：合约地址；
+- nodeIds：请求向哪些节点发送；
+
+### 16.9 getAddressByName：根据合约命名查询合约地址
+
+```
+getAddressByName(name: string, ...nodeIds: number[]): Request<string>
+```
+
+参数说明：
+
+- name：合约命名；
+- nodeIds：请求向哪些节点发送；
+
+### 16.10 getAllCNS：查询所有合约地址到合约命名的映射关系
+
+```
+getAllCNS(...nodeIds: number[]): Request<Record<string, string>>
+```
+
+参数说明：
+
+- nodeIds：请求向哪些节点发送；

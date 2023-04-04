@@ -1,0 +1,130 @@
+[
+    {
+        "version": "v1",
+        "beanName": "setMyMap",
+        "inputs": [
+            {
+                "name": "java.lang.String",
+                "type": "String",
+                "structName": "java.lang.String"
+            },
+            {
+                "name": "java.lang.String",
+                "type": "String",
+                "structName": "java.lang.String"
+            }
+        ],
+        "output": {
+            "name": "void",
+            "type": "Void",
+            "structName": "void"
+        },
+        "structs": [],
+        "beanType": "MethodBean",
+        "parallelLevel": 0
+    },
+    {
+        "version": "v1",
+        "beanName": "setCrossMap",
+        "inputs": [
+            {
+                "name": "java.lang.String",
+                "type": "String",
+                "structName": "java.lang.String"
+            },
+            {
+                "name": "java.lang.String",
+                "type": "String",
+                "structName": "java.lang.String"
+            },
+            {
+                "name": "java.lang.String",
+                "type": "String",
+                "structName": "java.lang.String"
+            }
+        ],
+        "output": {
+            "name": "void",
+            "type": "Void",
+            "structName": "void"
+        },
+        "structs": [],
+        "beanType": "MethodBean",
+        "parallelLevel": 0
+    },
+    {
+        "version": "v1",
+        "beanName": "getMyMap",
+        "inputs": [
+            {
+                "name": "java.lang.String",
+                "type": "String",
+                "structName": "java.lang.String"
+            }
+        ],
+        "output": {
+            "name": "java.lang.String",
+            "type": "String",
+            "structName": "java.lang.String"
+        },
+        "structs": [],
+        "beanType": "MethodBean",
+        "parallelLevel": 0
+    },
+    {
+        "version": "v1",
+        "beanName": "getCrossMap",
+        "inputs": [
+            {
+                "name": "java.lang.String",
+                "type": "String",
+                "structName": "java.lang.String"
+            },
+            {
+                "name": "java.lang.String",
+                "type": "String",
+                "structName": "java.lang.String"
+            }
+        ],
+        "output": {
+            "name": "java.lang.String",
+            "type": "String",
+            "structName": "java.lang.String"
+        },
+        "structs": [],
+        "beanType": "MethodBean",
+        "parallelLevel": 0
+    },
+    {
+        "version": "v1",
+        "beanName": "getMyLen",
+        "inputs": [],
+        "output": {
+            "name": "int",
+            "type": "Int",
+            "structName": "int"
+        },
+        "structs": [],
+        "beanType": "MethodBean",
+        "parallelLevel": 0
+    },
+    {
+        "version": "v1",
+        "beanName": "getCrossLen",
+        "inputs": [
+            {
+                "name": "java.lang.String",
+                "type": "String",
+                "structName": "java.lang.String"
+            }
+        ],
+        "output": {
+            "name": "int",
+            "type": "Int",
+            "structName": "int"
+        },
+        "structs": [],
+        "beanType": "MethodBean",
+        "parallelLevel": 0
+    }
+]
