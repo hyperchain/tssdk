@@ -1785,7 +1785,7 @@ getHosts(role: string, ...nodeIds: number[]): Request<Record<string, string>>
 
 参数说明：
 
-- role：节点角色（目前只支持查询vp节点）；
+- role：节点角色（目前只支持查询 vp 节点）；
 - nodeIds：请求向哪些节点发送；
 
 ### 16.5 getVSet：查询参与共识的节点信息
