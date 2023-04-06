@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import shelljs from "shelljs";
 import { HttpProvider, ProviderManager, logger, resetLogger } from "../../src";
 import { DailyRotateFileTransport } from "../../src/common/logger";
 
@@ -87,7 +86,7 @@ describe("normal test case", () => {
   });
 });
 
-function htmlConvert(filePath: string) {
-  const logPyToolPath = path.resolve(__dirname, "../resource/py/tool.py");
-  const ret = shelljs.exec(`python3 ${logPyToolPath} -f ${filePath}`);
-}
+// function htmlConvert(filePath: string) {
+//   const logPyToolPath = path.resolve(__dirname, "../resource/py/tool.py");
+//   const ret = shelljs.exec(`python3 ${logPyToolPath} -f ${filePath}`);
+// }
