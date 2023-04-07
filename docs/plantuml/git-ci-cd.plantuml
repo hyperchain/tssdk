@@ -1,0 +1,21 @@
+@startuml
+!pragma layout smetana
+
+main -> develop: v1.0.0，等待下一迭代
+participant CI
+develop -> feature1: 切出 feature1 分支开发新特性
+feature1 --> CI: feature1 合入 develop 时触发单测、冒烟用例
+CI --> develop: 冒烟通过，合入 develop
+autonumber 2
+develop -> feature2: 切出 feature2 分支开发新特性
+feature2 --> CI: feature2 合入 develop 时触发单测、冒烟用例
+CI -->develop: 冒烟通过，合入 develop
+develop -> release: 基于新的 feature1 和 feature2，切出 release 分支
+release -> CD: 发版时，打tag: v1.1.0-1
+CD --> release: 测试失败
+release -> CD: 修改后，打tag: v1.1.0-2
+CD --> release: 测试通过
+release -> develop: release 合入 develop
+develop -> main: 合入 main
+main -> main: 打tag：v1.1.0
+@enduml

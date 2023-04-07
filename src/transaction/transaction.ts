@@ -798,12 +798,12 @@ class EVMBuilder extends Builder {
   public deploy(
     bin: string | ArrayBuffer | Uint8Array,
     abi: string | ArrayBuffer | Uint8Array,
-    params: string[]
+    params: any[]
   ): Builder;
   public deploy(
     bin: string | ArrayBuffer | Uint8Array,
     abi?: string | ArrayBuffer | Uint8Array,
-    params?: string[]
+    params?: any[]
   ) {
     this.transaction.setTo("0x0");
     let payload = typeof bin === "string" ? bin : ByteUtil.toString(bin);
